@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arm Workout - Fitness Journey</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* Copy all styles from abs.html */
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+
+        .header-image {
+            position: relative;
+            height: 200px;
+            margin: -30px -30px 30px -30px;
+            background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+                            url('https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60');
+            background-size: cover;
+            background-position: center;
+            border-radius: 15px 15px 0 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            text-align: center;
+        }
+
+        /* Copy remaining styles from abs.html */
+        .header-content {
+            color: white;
+            z-index: 1;
+        }
+
+        /* ... (copy all other styles) ... */
+    </style>
+</head>
+<body>
+    <div class="workout-container">
+        <a href="../workoutPlan.html" class="back-button">← Back to Workouts</a>
+        <div class="header-image">
+            <div class="header-content">
+                <h1>10-Exercise Arm Beginner Workout</h1>
+            </div>
+        </div>
+
+        <div class="workout-stats">
+            <div class="stat-item">
+                <div class="stat-value">10</div>
+                <div class="stat-label">Exercises</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">20</div>
+                <div class="stat-label">Minutes</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">180</div>
+                <div class="stat-label">Est. Calories</div>
+            </div>
+        </div>
+
+        <button class="start-button" onclick="startWorkout()">
+            Start Workout Session
+        </button>
+
+        <div class="workout-section">
+            <h2>Warm-Up</h2>
+            <div class="exercise-item">
+                <span class="exercise-name">Arm Raises</span>
+                <span class="exercise-detail">30 seconds</span>
+            </div>
+            <div class="exercise-item">
+                <span class="exercise-name">Jumping Jacks</span>
+                <span class="exercise-detail">30 seconds</span>
+            </div>
+        </div>
+
+        <div class="workout-section">
+            <h2>Main Workout</h2>
+            <div class="exercise-item">
+                <span class="exercise-name">Triceps Dips</span>
+                <span class="exercise-detail">10 reps</span>
+            </div>
+            <div class="exercise-item">
+                <span class="exercise-name">Arm Circles (Clockwise)</span>
+                <span class="exercise-detail">30 seconds</span>
+            </div>
+            <div class="exercise-item">
+                <span class="exercise-name">Arm Circles (Counterclockwise)</span>
+                <span class="exercise-detail">30 seconds</span>
+            </div>
+            <div class="exercise-item">
+                <span class="exercise-name">Diamond Push-Ups</span>
+                <span class="exercise-detail">6 reps</span>
+            </div>
+            <div class="exercise-item">
+                <span class="exercise-name">Wall Push-Ups</span>
+                <span class="exercise-detail">12 reps</span>
+            </div>
+            <div class="exercise-item">
+                <span class="exercise-name">Diagonal Plank</span>
+                <span class="exercise-detail">10 reps (5 per side)</span>
+            </div>
+        </div>
+
+        <div class="workout-section">
+            <h2>Cool-Down</h2>
+            <div class="exercise-item">
+                <span class="exercise-name">Triceps Stretch (Left & Right)</span>
+                <span class="exercise-detail">20 seconds each</span>
+            </div>
+            <div class="exercise-item">
+                <span class="exercise-name">Chest Stretch</span>
+                <span class="exercise-detail">20 seconds</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function startWorkout() {
+            if (confirm('Ready to start your arm workout?')) {
+                alert('Workout started! 💪');
+            }
+        }
+    </script>
+</body>
+</html> 

@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Light theme (default) */
+            --bg-color: #f5f5f5;
+            --card-bg: white;
+            --text-color: #333;
+            --border-color: #eee;
+            --secondary-text: #666;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #1a1a1a;
+            --card-bg: #2d2d2d;
+            --text-color: #ffffff;
+            --border-color: #404040;
+            --secondary-text: #b0b0b0;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .settings-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .settings-section {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: #ff466b;
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            color: #ff466b;
+            font-size: 1.3rem;
+            margin: 0 0 20px 0;
+        }
+
+        .setting-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+
+        .setting-label {
+            flex: 1;
+        }
+
+        .setting-title {
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+
+        .setting-description {
+            font-size: 0.9rem;
+            color: var(--secondary-text);
+        }
+
+        /* Theme Selection */
+        .theme-selector {
+            display: flex;
+            gap: 15px;
+            max-width: 200px;
+        }
+
+        .theme-option {
+            flex: 1;
+            padding: 8px;
+            border-radius: 10px;
+            border: 2px solid #ddd;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .theme-option.active {
+            border-color: var(--accent-color);
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .theme-icon {
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+
+        .theme-label {
+            font-weight: 500;
+            font-size: 0.8rem;
+        }
+
+        /* Toggle Switch */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 26px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #ff466b;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(24px);
+        }
+
+        /* Time Input */
+        .time-input {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        input[type="number"] {
+            width: 70px;
+            padding: 8px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        select {
+            padding: 8px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            background-color: white;
+            font-size: 0.9rem;
+        }
+
+        button {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #ff6b6b, #ff466b);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s ease;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        .save-section {
+            text-align: right;
+            margin-top: 20px;
+        }
+
+        .footer-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: 15px;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-around;
+            z-index: 1000;
+        }
+
+        .nav-button {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .nav-button.active {
+            color: #ff466b;
+        }
+
+        .nav-icon {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+
+        /* Add padding to prevent content from being hidden behind footer */
+        body {
+            padding-bottom: 80px;
+        }
+    </style>
+</head>
+<body>
+    <div class="settings-container">
+        <h1>Settings</h1>
+
+        <div class="settings-section">
+            <div class="setting-item">
+                <div class="setting-label">
+                    <div class="setting-title">Welcome, <span id="userNameDisplay">User</span>!</div>
+                    <div class="setting-description">Your personal fitness settings</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Appearance Settings -->
+        <div class="settings-section">
+            <h2>Theme</h2>
+            <div class="setting-item">
+                <div class="setting-label">
+                    <div class="setting-title">Display Mode</div>
+                    <div class="setting-description">Choose your preferred display mode</div>
+                </div>
+                <div class="theme-selector">
+                    <div class="theme-option" onclick="setTheme('light')" id="lightTheme">
+                        <div class="theme-icon">☀️</div>
+                        <div class="theme-label">Light</div>
+                    </div>
+                    <div class="theme-option" onclick="setTheme('dark')" id="darkTheme">
+                        <div class="theme-icon">🌙</div>
+                        <div class="theme-label">Dark</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Workout Settings -->
+        <div class="settings-section">
+            <h2>Workout Settings</h2>
+            <div class="setting-item">
+                <div class="setting-label">
+                    <div class="setting-title">Rest Between Sets</div>
+                    <div class="setting-description">Set your preferred rest time between exercises</div>
+                </div>
+                <div class="time-input">
+                    <input type="number" id="restTime" value="60" min="10" max="300">
+                    <span>seconds</span>
+                </div>
+            </div>
+            <div class="setting-item">
+                <div class="setting-label">
+                    <div class="setting-title">Countdown Before Workout</div>
+                    <div class="setting-description">Preparation time before starting each exercise</div>
+                </div>
+                <div class="time-input">
+                    <input type="number" id="countdownTime" value="5" min="3" max="10">
+                    <span>seconds</span>
+                </div>
+            </div>
+            <div class="setting-item">
+                <div class="setting-label">
+                    <div class="setting-title">Voice Guidance</div>
+                    <div class="setting-description">Audio instructions during workouts</div>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Reminder Settings -->
+        <div class="settings-section">
+            <h2>Reminders</h2>
+            <div class="setting-item">
+                <div class="setting-label">
+                    <div class="setting-title">Workout Reminders</div>
+                    <div class="setting-description">Get notified about your scheduled workouts</div>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="setting-item">
+                <div class="setting-label">
+                    <div class="setting-title">Reminder Time</div>
+                    <div class="setting-description">When should we remind you?</div>
+                </div>
+                <select>
+                    <option>30 minutes before</option>
+                    <option>1 hour before</option>
+                    <option>2 hours before</option>
+                    <option>1 day before</option>
+                </select>
+            </div>
+            <div class="setting-item">
+                <div class="setting-label">
+                    <div class="setting-title">Progress Updates</div>
+                    <div class="setting-description">Weekly summary of your fitness progress</div>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+
+        <div class="save-section">
+            <button onclick="saveSettings()">Save Changes</button>
+        </div>
+    </div>
+
+    <div class="footer-nav">
+        <a href="workoutPlan.html" class="nav-button">
+            <div class="nav-icon">🏋️‍♂️</div>
+            Home
+        </a>
+        <a href="report.html" class="nav-button">
+            <div class="nav-icon">📊</div>
+            Report
+        </a>
+        <a href="settings.html" class="nav-button active">
+            <div class="nav-icon">⚙️</div>
+            Settings
+        </a>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get username from localStorage
+            const userName = localStorage.getItem('userName');
+            if (userName) {
+                document.getElementById('userNameDisplay').textContent = userName;
+            }
+        });
+
+        function setTheme(theme) {
+            // Apply theme to document
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+            
+            // Update active state of theme options
+            document.getElementById('lightTheme').classList.toggle('active', theme === 'light');
+            document.getElementById('darkTheme').classList.toggle('active', theme === 'dark');
+            
+            // Apply theme-specific styles
+            if (theme === 'dark') {
+                document.body.style.background = '#1a1a1a';
+                document.querySelectorAll('.settings-section').forEach(section => {
+                    section.style.background = '#2d2d2d';
+                });
+            } else {
+                document.body.style.background = '#f5f5f5';
+                document.querySelectorAll('.settings-section').forEach(section => {
+                    section.style.background = 'white';
+                });
+            }
+        }
+
+        // Initialize theme from localStorage
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            setTheme(savedTheme);
+        });
+
+        function saveSettings() {
+            const settings = {
+                userName: localStorage.getItem('userName'), // Include username in settings
+                restTime: document.getElementById('restTime').value,
+                countdownTime: document.getElementById('countdownTime').value,
+                // Collect other settings...
+            };
+            
+            // Save settings to localStorage
+            Object.entries(settings).forEach(([key, value]) => {
+                localStorage.setItem(key, value);
+            });
+            
+            console.log('Saving settings:', settings);
+            alert('Settings saved successfully!');
+        }
+    </script>
+</body>
+</html> 

@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Your Fitness Report</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            /* Light theme (default) */
+            --bg-color: #f5f5f5;
+            --card-bg: white;
+            --text-color: #333;
+            --border-color: #eee;
+            --secondary-text: #666;
+            --accent-color: #ff466b;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #1a1a1a;
+            --card-bg: #2d2d2d;
+            --text-color: #ffffff;
+            --border-color: #404040;
+            --secondary-text: #b0b0b0;
+            --accent-color: #ff6b6b;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 10px;
+            background: var(--bg-color);
+            color: var(--text-color);
+            padding-bottom: 80px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .report-container {
+            max-width: 100%;
+            padding: 10px;
+            margin: 0 auto;
+        }
+
+        .user-profile {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            align-items: center;
+        }
+
+        @media (min-width: 768px) {
+            .user-profile {
+                display: grid;
+                grid-template-columns: auto 1fr;
+                padding: 30px;
+                gap: 30px;
+            }
+        }
+
+        .profile-picture-container {
+            width: 100px;
+            height: 100px;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .profile-info-wrapper {
+            display: flex;
+            flex: 1;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .profile-info {
+            min-width: 150px;
+        }
+
+        .profile-details {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            flex: 1;
+        }
+
+        .profile-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--bg-color);
+            padding: 8px 15px;
+            border-radius: 8px;
+            min-width: 120px;
+        }
+
+        .profile-label {
+            color: var(--secondary-text);
+            font-size: 0.8rem;
+        }
+
+        .profile-value {
+            color: var(--accent-color);
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .profile-info-wrapper {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .profile-details {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .profile-item {
+                flex: 1;
+                min-width: calc(50% - 8px);
+                justify-content: space-between;
+            }
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        @media (min-width: 768px) {
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                gap: 20px;
+            }
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--accent-color);
+            margin: 10px 0;
+        }
+
+        .stat-label {
+            color: var(--secondary-text);
+            font-size: 0.9rem;
+        }
+
+        .chart-container {
+            padding: 15px;
+            margin: 15px 0;
+            overflow-x: auto;
+            background: var(--card-bg);
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .weight-input {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        @media (min-width: 480px) {
+            .weight-input {
+                flex-direction: row;
+                align-items: center;
+            }
+        }
+
+        input {
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 150px;
+            font-size: 16px; /* Prevents iOS zoom on focus */
+        }
+
+        button {
+            padding: 12px 20px;
+            font-size: 16px;
+            white-space: nowrap;
+            background: linear-gradient(135deg, #ff6b6b, #ff466b);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s ease;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        .calendar-container {
+            padding: 15px;
+            margin: 15px 0;
+            overflow-x: auto;
+            background: var(--card-bg);
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, minmax(40px, 1fr));
+            gap: 5px;
+            margin-top: 10px;
+        }
+
+        .calendar-day {
+            padding: 8px 5px;
+            font-size: 14px;
+            text-align: center;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        .calendar-day.workout-done {
+            background: rgba(255, 107, 107, 0.1);
+            border-color: #ff6b6b;
+            color: #ff466b;
+        }
+
+        h2 {
+            color: #ff466b;
+            margin-bottom: 15px;
+        }
+
+        .streak-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            background: linear-gradient(135deg, #ff6b6b, #ff466b);
+            color: white;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .profile-picture {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #ff466b;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .profile-picture-overlay {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: #ff466b;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .profile-subtitle {
+            color: #666;
+            font-size: 1rem;
+        }
+
+        .footer-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--card-bg);
+            padding: 10px 15px;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-around;
+            z-index: 1000;
+        }
+
+        .nav-button {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .nav-button.active {
+            color: #ff466b;
+        }
+
+        .nav-icon {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+
+        /* Adjust chart size for mobile */
+        canvas {
+            max-height: 300px;
+            width: 100% !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="report-container">
+        <!-- User Profile Header -->
+        <div class="user-profile">
+            <div class="profile-picture-container">
+                <img src="https://via.placeholder.com/150" alt="Profile Picture" class="profile-picture" id="profilePicture">
+                <label for="profilePictureInput" class="profile-picture-overlay">
+                    <span>📷</span>
+                </label>
+                <input type="file" id="profilePictureInput" accept="image/*" style="display: none;">
+            </div>
+            <div class="profile-info-wrapper">
+                <div class="profile-info">
+                    <h2 class="profile-name">John Doe</h2>
+                    <div class="profile-subtitle">Fitness Enthusiast</div>
+                </div>
+                <div class="profile-details">
+                    <div class="profile-item">
+                        <div class="profile-label">Age</div>
+                        <div class="profile-value">28</div>
+                    </div>
+                    <div class="profile-item">
+                        <div class="profile-label">Gender</div>
+                        <div class="profile-value">Male</div>
+                    </div>
+                    <div class="profile-item">
+                        <div class="profile-label">Weight</div>
+                        <div class="profile-value">75 kg</div>
+                    </div>
+                    <div class="profile-item">
+                        <div class="profile-label">Height</div>
+                        <div class="profile-value">175 cm</div>
+                    </div>
+                    <div class="profile-item">
+                        <div class="profile-label">Goal</div>
+                        <div class="profile-value">Weight Loss</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- User Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value">24</div>
+                <div class="stat-label">Total Workouts Completed</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">720</div>
+                <div class="stat-label">Total Minutes Exercised</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">5</div>
+                <div class="stat-label">Current Streak (Days)</div>
+            </div>
+        </div>
+
+        <!-- Weight Progress Chart -->
+        <div class="chart-container">
+            <h2>Weight Progress</h2>
+            <canvas id="weightChart"></canvas>
+            <div class="weight-input">
+                <input type="number" id="weightInput" placeholder="Weight (kg)" step="0.1" min="0">
+                <button onclick="addWeight()">Add Weight</button>
+            </div>
+        </div>
+
+        <!-- Weekly Calendar -->
+        <div class="calendar-container">
+            <h2>Exercise History <span class="streak-badge">5 Day Streak! 🔥</span></h2>
+            <div class="calendar-grid" id="calendar"></div>
+        </div>
+    </div>
+
+    <div class="footer-nav">
+        <a href="workoutPlan.html" class="nav-button">
+            <div class="nav-icon">🏋️‍♂️</div>
+            Home
+        </a>
+        <a href="report.html" class="nav-button active">
+            <div class="nav-icon">📊</div>
+            Report
+        </a>
+        <a href="settings.html" class="nav-button">
+            <div class="nav-icon">⚙️</div>
+            Settings
+        </a>
+    </div>
+
+    <script>
+        // Add this at the beginning of your script section
+        document.addEventListener('DOMContentLoaded', function() {
+            // Apply saved theme
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        });
+
+        // Weight Chart initialization
+        const ctx = document.getElementById('weightChart').getContext('2d');
+        let weightData = [];
+        let dates = [];
+
+        const weightChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: dates,
+                datasets: [{
+                    label: 'Weight (kg)',
+                    data: weightData,
+                    borderColor: '#ff466b',
+                    backgroundColor: 'rgba(255, 70, 107, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `Weight: ${context.raw} kg`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        title: {
+                            display: true,
+                            text: 'Weight (kg)'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Date'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Initialize weight history array
+        let weightHistory = JSON.parse(localStorage.getItem('weightHistory') || '[]');
+
+        function addWeight() {
+            const weightInput = document.getElementById('weightInput');
+            const weight = parseFloat(weightInput.value);
+            
+            if (!weight || weight <= 0) {
+                alert('Please enter a valid weight');
+                return;
+            }
+
+            const today = new Date();
+            const dateStr = today.toISOString().split('T')[0];
+            const displayDate = today.toLocaleDateString('en-US', { 
+                month: 'short', 
+                day: 'numeric' 
+            });
+
+            // Add to weight history
+            weightHistory.push({ date: dateStr, weight: weight });
+            localStorage.setItem('weightHistory', JSON.stringify(weightHistory));
+
+            // Update chart
+            updateWeightChart();
+
+            // Update current weight in profile
+            document.querySelector('.profile-item:nth-child(3) .profile-value').textContent = `${weight} kg`;
+
+            // Clear input
+            weightInput.value = '';
+        }
+
+        function updateWeightChart() {
+            // Sort weight history by date
+            weightHistory.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+            // Update chart data
+            weightData = weightHistory.map(entry => entry.weight);
+            dates = weightHistory.map(entry => {
+                const date = new Date(entry.date);
+                return date.toLocaleDateString('en-US', { 
+                    month: 'short', 
+                    day: 'numeric' 
+                });
+            });
+
+            // Update chart
+            weightChart.data.labels = dates;
+            weightChart.data.datasets[0].data = weightData;
+            weightChart.update();
+        }
+
+        // Initialize chart with weight history
+        function initializeWeightChart() {
+            if (weightHistory.length > 0) {
+                updateWeightChart();
+            }
+        }
+
+        // Call these functions when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeWeightChart();
+            // ... (keep existing DOMContentLoaded handlers)
+        });
+
+        // Calendar
+        function populateCalendar() {
+            const calendar = document.getElementById('calendar');
+            const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            
+            // Add day headers
+            daysOfWeek.forEach(day => {
+                const dayHeader = document.createElement('div');
+                dayHeader.className = 'calendar-day';
+                dayHeader.textContent = day;
+                calendar.appendChild(dayHeader);
+            });
+
+            // Add days with workout status
+            for (let i = 1; i <= 7; i++) {
+                const day = document.createElement('div');
+                day.className = 'calendar-day';
+                if ([2, 3, 4, 5, 6].includes(i)) {
+                    day.classList.add('workout-done');
+                }
+                day.textContent = i;
+                calendar.appendChild(day);
+            }
+        }
+
+        // Initialize calendar
+        populateCalendar();
+
+        // Profile Picture Handling
+        const profilePictureInput = document.getElementById('profilePictureInput');
+        const profilePicture = document.getElementById('profilePicture');
+
+        profilePictureInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    profilePicture.src = e.target.result;
+                    
+                    // Here you would typically upload the image to your server
+                    console.log('Profile picture updated');
+                }
+                
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Update the loadBMIData function in your script section
+        function loadBMIData() {
+            const bmiData = JSON.parse(localStorage.getItem('bmiData'));
+            
+            if (bmiData) {
+                // Update profile values with proper formatting
+                document.querySelector('.profile-item:nth-child(1) .profile-value').textContent = bmiData.age;
+                document.querySelector('.profile-item:nth-child(2) .profile-value').textContent = 
+                    bmiData.gender.charAt(0).toUpperCase() + bmiData.gender.slice(1);
+                document.querySelector('.profile-item:nth-child(3) .profile-value').textContent = 
+                    `${bmiData.weight} kg`;
+                document.querySelector('.profile-item:nth-child(4) .profile-value').textContent = 
+                    `${bmiData.height} cm`;
+                document.querySelector('.profile-item:nth-child(5) .profile-value').textContent = 
+                    bmiData.fitnessGoal || 'Not Set';
+                
+                // Initialize weight chart with the current weight
+                if (bmiData.weight) {
+                    weightData = [parseFloat(bmiData.weight)];
+                    dates = [new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' })];
+                    weightChart.update();
+                }
+            }
+        }
+
+        // Make sure this is called when the page loads
+        document.addEventListener('DOMContentLoaded', loadBMIData);
+
+        // Add this right after the existing script tag opening
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get username from localStorage
+            const userName = localStorage.getItem('userName');
+            if (userName) {
+                // Update the profile name
+                document.querySelector('.profile-name').textContent = userName;
+            }
+            
+            // Load BMI data (your existing function)
+            loadBMIData();
+        });
+    </script>
+</body>
+</html> 

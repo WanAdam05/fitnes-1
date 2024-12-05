@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Fitness Journey</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Light theme (default) */
+            --bg-color: #f5f5f5;
+            --card-bg: white;
+            --text-color: #333;
+            --border-color: #eee;
+            --secondary-text: #666;
+            --accent-color: #ff466b;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #1a1a1a;
+            --card-bg: #2d2d2d;
+            --text-color: #ffffff;
+            --border-color: #404040;
+            --secondary-text: #b0b0b0;
+            --accent-color: #ff6b6b;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .dashboard {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .main-content {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .workout-category {
+            margin-bottom: 40px;
+        }
+
+        .workout-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .workout-card {
+            background: var(--card-bg);
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .workout-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .workout-image {
+            width: 100%;
+            height: 150px;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .workout-info {
+            padding: 15px;
+        }
+
+        h1 {
+            color: #ff466b;
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            color: #ff466b;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+
+        h3 {
+            margin: 0 0 10px 0;
+            color: #333;
+        }
+
+        .difficulty {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            margin-top: 5px;
+        }
+
+        .beginner { background: #4CAF50; color: white; }
+        .intermediate { background: #FFC107; color: black; }
+        .advanced { background: #f44336; color: white; }
+
+        .body-part-filter {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 20px;
+            background: #f0f0f0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn.active {
+            background: #ff466b;
+            color: white;
+        }
+
+        .nav-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: 15px 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .nav-logo {
+            color: #ff466b;
+            font-weight: bold;
+            font-size: 1.2rem;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-link {
+            color: #666;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .nav-link:hover {
+            color: #ff466b;
+        }
+
+        .nav-link.active {
+            color: #ff466b;
+        }
+
+        /* Adjust main content padding to account for fixed navbar */
+        body {
+            padding-top: 70px;
+        }
+
+        .footer-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--card-bg);
+            padding: 15px;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-around;
+            z-index: 1000;
+        }
+
+        .nav-button {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .nav-button.active {
+            color: #ff466b;
+        }
+
+        .nav-icon {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+
+        /* Add padding to prevent content from being hidden behind footer */
+        body {
+            padding-bottom: 80px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav-bar">
+        <a href="workoutPlan.html" class="nav-logo">FitnessJourney</a>
+    </nav>
+
+    <div class="dashboard">
+        <div class="main-content">
+            <h1>Your Personalized Workout Plan</h1>
+
+            <div class="workout-category">
+                <h2>Today's Recommended Workouts</h2>
+                <div class="workout-cards">
+                    <div class="workout-card" onclick="window.location.href='workouts/abs.html'">
+                        <div class="workout-image" style="background-image: url('https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60')"></div>
+                        <div class="workout-info">
+                            <h3>10-Exercise Abs Workout</h3>
+                            <p>20 min • Core Focus</p>
+                            <span class="difficulty beginner">Beginner</span>
+                        </div>
+                    </div>
+                    <div class="workout-card" onclick="window.location.href='workouts/chest.html'">
+                        <div class="workout-image" style="background-image: url('https://images.unsplash.com/photo-1574680096145-d05b474e2155?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60')"></div>
+                        <div class="workout-info">
+                            <h3>10-Exercise Chest Workout</h3>
+                            <p>25 min • Chest Focus</p>
+                            <span class="difficulty beginner">Beginner</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="workout-category">
+                <h2>All Workouts</h2>
+                <div class="workout-cards">
+                    <div class="workout-card" onclick="window.location.href='workouts/arms.html'">
+                        <div class="workout-info">
+                            <h3>10-Exercise Arm Workout</h3>
+                            <p>20 min • Arms Focus</p>
+                            <span class="difficulty beginner">Beginner</span>
+                        </div>
+                    </div>
+                    <div class="workout-card" onclick="window.location.href='workouts/legs.html'">
+                        <div class="workout-info">
+                            <h3>15-Exercise Leg Workout</h3>
+                            <p>30 min • Legs Focus</p>
+                            <span class="difficulty beginner">Beginner</span>
+                        </div>
+                    </div>
+                    <div class="workout-card" onclick="window.location.href='workouts/fullbody.html'">
+                        <div class="workout-info">
+                            <h3>17-Exercise Full Body Workout</h3>
+                            <p>40 min • Full Body</p>
+                            <span class="difficulty beginner">Beginner</span>
+                        </div>
+                    </div>
+                    <div class="workout-card" onclick="window.location.href='workouts/fatburning.html'">
+                        <div class="workout-info">
+                            <h3>Fat Burning Workout</h3>
+                            <p>25 min • Full Body</p>
+                            <span class="difficulty beginner">Beginner</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-nav">
+        <a href="workoutPlan.html" class="nav-button active">
+            <div class="nav-icon">🏋️‍♂️</div>
+            Home
+        </a>
+        <a href="report.html" class="nav-button">
+            <div class="nav-icon">📊</div>
+            Report
+        </a>
+        <a href="settings.html" class="nav-button">
+            <div class="nav-icon">⚙️</div>
+            Settings
+        </a>
+    </div>
+
+    <script>
+        // Add this at the beginning of your script section
+        document.addEventListener('DOMContentLoaded', function() {
+            // Apply saved theme
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        });
+    </script>
+</body>
+</html> 
